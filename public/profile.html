@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Profile</h1>
+    <h2>Username: <spam id="username"></spam></h2>
+    <h2>Email: <spam id="email"></spam></h2>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+        const token = localStorage.getItem('token');
+
+        axios.get('/api/v1/users/profile', {
+            headers: {
+                Autorization: `Bearer ${token}`
+            }
+        })
+            .then( ({data}) => {
+                console.log(data);
+            }).catch(error =>{
+                console.error(error);
+            });
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+    </script>
+</body>
+</html>
