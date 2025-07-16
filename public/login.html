@@ -26,8 +26,14 @@
                     password
                 });
                 console.log(data);
-                localStorage.setItem('token', data.msg);
-                window.location.href = '/profile';
+                localStorage.setItem('token', data.msg.token);
+
+                
+                // if(data.msg.role_id === 1){
+                //     window.location.href = '/admin';
+                // }
+
+                // window.location.href = '/profile';
             } catch(error){
                 console.log(error);
             }

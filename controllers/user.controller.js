@@ -23,7 +23,8 @@ const register = async (req, res) => {
         const newUser = await userModel.create({email, password: hashedPassword, username});
 
         const token = jwt.sign({
-            email: newUser.email
+            email: newUser.email,
+            role_id: newUser.role_id
             },
             process.env.JWT_SECRET,
             {
@@ -32,7 +33,13 @@ const register = async (req, res) => {
         )
 
 
-        return res.status(201).json({ok: true, msg: token})
+        return res.status(201).json({
+            ok: true, 
+            msg: {
+                token,
+                role_id: newUser.role_id
+            }
+        })
     } catch(error){
         console.log(error);
         return res.status(500).json({
@@ -72,7 +79,8 @@ const login = async (req, res) => {
         }
 
         const token = jwt.sign({
-            email: user.email
+            email: user.email,
+            role_id: user.role_id
             },
             process.env.JWT_SECRET,
             {
@@ -80,7 +88,13 @@ const login = async (req, res) => {
             }
         )
 
-        return res.status(200).json({ok: true, msg: token})
+        return res.status(200).json({
+            ok: true, 
+            msg: {
+                token,
+                role_id: user.role_id
+            }
+        })
 
     } catch(error){
         console.log(error);
@@ -107,9 +121,46 @@ const profile = async (req, res) => {
     }
 }
 
+const findAll = async(req, res) => {
+   try{
+    const users = await userModel.findAll();
+    return res.status(200).json({ok: true, msg: users});
+   }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error Server - findAll'
+        });
+   }
+}
+
+const updateRoleVet = async(req, res) => {
+    try{
+        const { uid } = req.params;
+        
+        const user = await userModel.findOneByUid(uid);
+        if(!user){
+            return res.status(404).json({ok: false, msg: 'User does not exist'});
+        }
+
+        const updateUser = await userModel.updateRoleVet(uid);
+
+        return res.status(200).json({ok: true, msg: updateUser});
+
+    } catch(error){
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error Server - updateRoleVet'
+        });
+    }
+}
+
 
 export const userController = {
     register,
     login,
-    profile
+    profile,
+    findAll,
+    updateRoleVet
 }
