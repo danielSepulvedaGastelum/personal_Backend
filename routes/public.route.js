@@ -19,4 +19,8 @@ router.get('/admin', (req, res) =>{
     res.sendFile(publicPath + '/admin.html');
 });
 
+router.get('/register', (req, res) =>{
+    res.sendFile(publicPath + '/register.html');
+});
+
 export default router;
