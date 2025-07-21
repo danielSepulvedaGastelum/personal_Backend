@@ -5,6 +5,7 @@ import {userModel} from '../models/user.model.js';
 //  /api/v1/users/register
 const register = async (req, res) => {
     try{
+        // req.body extrae la imformación que viaja atravez del cuerpo de la petición 
         console.log(req.body);
         const { username, email, password } = req.body;
 
