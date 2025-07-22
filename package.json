@@ -2,7 +2,7 @@
   "name": "01-jwt-youtube",
   "version": "1.0.0",
   "type": "module",
-  "description": "JWT PostgreSQL",
+  "description": "Backend Personal",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danielSepulvedaGastelum/01-JWT-youtube.git"
+    "url": "git+https://github.com/danielSepulvedaGastelum/personal_Backend.git"
   },
   "keywords": [
     "Node",
@@ -21,9 +21,9 @@
   "author": "Daniel Sepulveda Gastelum",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/danielSepulvedaGastelum/01-JWT-youtube/issues"
+    "url": "https://github.com/danielSepulvedaGastelum/personal_Backend/issues"
   },
-  "homepage": "https://github.com/danielSepulvedaGastelum/01-JWT-youtube#readme",
+  "homepage": "https://github.com/danielSepulvedaGastelum/personal_Backend#readme",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.0.1",
