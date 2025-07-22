@@ -23,4 +23,8 @@ router.get('/register', (req, res) =>{
     res.sendFile(publicPath + '/register.html');
 });
 
+router.get('/pets', (req, res) =>{
+    res.sendFile(publicPath + '/pets.html');
+});
+
 export default router;
