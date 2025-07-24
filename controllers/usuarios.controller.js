@@ -5,6 +5,7 @@ import { roles } from '../database/roles-perfiles.js'
 
 const generarMenuPorMatricula = async (req, res) => {
     try {
+        console.log(req.body);
         const { matricula } = req.body;
         if(!matricula ){
             return res
@@ -36,17 +37,28 @@ const generarMenuPorMatricula = async (req, res) => {
                 .json({ok: false, msg: 'No existen perfiles asignados en la base de datos con respecto al rol del usuario'});
         }
 
-        function construirArbol(perfiles, parentId = null) {
+        // console.log('perfiles: ',perfiles);
 
-            return perfiles
-                .filter(p => p.parent_id === parentId)
-                .map(p => ({
+        function construirArbol(perfiles, parentId = null) {
+        return perfiles
+            .filter(p => p.parent_id === parentId)
+            .map(p => {
+            const hijos = construirArbol(perfiles, p.pid);
+            const nodo = {
                 title: p.title,
-                icon: p.icon,
-                path: p.path,
-                children: construirArbol(perfiles, p.pid)
-                }));
-            
+                icon: p.icon
+            };
+
+            if (p.path !== null) {
+                nodo.path = p.path;
+            }
+
+            if (hijos.length > 0) {
+                nodo.children = hijos;
+            }
+
+            return nodo;
+            });
         }
 
         const menuPorMatricula = construirArbol(perfiles);
