@@ -1,11 +1,57 @@
 import {db} from '../database/connection_database.js'
 
+
+const findOneByMatricula = async(matricula) => {
+    const query = {
+        text: `
+            SELECT MATRICULA, NICKNAME, NOMBRE, APELLIDO1, APELLIDO2, EMAIL, UNIDAD_TRABAJO, SERVICIO, DEPARTAMENTO, OFICINA, SECCION, ROLE_ID
+            FROM usuarios
+            WHERE matricula = $1
+        `,
+        values: [matricula]
+    };
+
+    const { rows } = await db.query(query);
+
+    return rows[0];
+}
+
+const findOneByMatriculaLogin = async(matricula) => {
+    const query = {
+        text: `
+            SELECT MATRICULA, PASSWORD, ROLE_ID
+            FROM usuarios
+            WHERE matricula = $1
+        `,
+        values: [matricula]
+    };
+
+    const { rows } = await db.query(query);
+
+    return rows[0];
+}  
+
+const cambioPassword = async({matricula, password}) =>{
+    const query = {
+        text: `
+            UPDATE USUARIOS
+            SET PASSWORD = $2,
+            ULTIMO_CAMBIO_PASSWORD = CURRENT_TIMESTAMP
+            WHERE MATRICULA = $1
+            RETURNING MATRICULA
+        `,
+        values: [matricula, password]
+    };
+    const { rows } = await db.query(query).catch( e => console.log(e));
+    return rows[0];
+}
+
 const existeUsuario = async(matricula) =>{
     const query = {
         text: `
-            SELECT u.matricula AS usuario_id, r.rid AS rol
-            FROM USUARIOS u
-            JOIN ROLES r ON u.role_id = r.rid
+            SELECT u.matricula, u.role_id, ur.menu_id, ur.nombre AS rol
+            FROM usuarios u
+            LEFT JOIN usuario_roles ur ON u.role_id = ur.rid
             WHERE u.matricula = $1
         `,
         values:[matricula]
@@ -17,15 +63,17 @@ const existeUsuario = async(matricula) =>{
 }
 
 
-const UsuarioPerfilesAutorizadosPorRol = async(matricula, perfilesPermitidosPorRol) =>{
+const UsuarioPerfilesAutorizadosPorRol = async(menu_id, matricula) =>{
     const query = {
         text:`
-            SELECT p.pid, p.title, p.icon, p.path, p.parent_id
-            FROM USUARIO_PERFILES up
-            JOIN PERFILES p ON up.pid = p.pid
-            WHERE up.matricula = $1 AND p.pid = ANY($2::text[])
+            SELECT cp.cpid AS pid, cp.title, cp.icon, cp.path, um.parent_pid
+            FROM usuario_perfiles up
+            JOIN usuario_catalogo_perfiles cp ON up.pid = cp.cpid
+            JOIN usuario_menus um ON cp.cpid = um.pid AND um.mid = $1
+            WHERE up.matricula = $2
+            ORDER BY um.orden ASC
         `,
-        values: [matricula, perfilesPermitidosPorRol]
+        values: [menu_id, matricula]
     }
 
     const { rows } = await db.query(query);
@@ -34,6 +82,9 @@ const UsuarioPerfilesAutorizadosPorRol = async(matricula, perfilesPermitidosPorR
 }
 
 export const usuarioModel = {
+    findOneByMatricula,
+    findOneByMatriculaLogin,
+    cambioPassword,
     existeUsuario,
     UsuarioPerfilesAutorizadosPorRol
 

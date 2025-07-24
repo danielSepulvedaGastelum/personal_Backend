@@ -3,30 +3,155 @@ DROP TABLE IF EXISTS PETS;
 DROP TABLE IF EXISTS USERS;
 DROP TABLE IF EXISTS ROLES;
 
-CREATE TABLE ROLES (
-    RID VARCHAR(20) PRIMARY KEY,
-    NOMBRE VARCHAR(50) NOT NULL UNIQUE,
-    UNIDAD VARCHAR(20) NOT NULL CHECK (UNIDAD IN ('OOAD', 'UNIDAD'))
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE USUARIO_CATALOGO_MENUS (
+  CMID VARCHAR(20) NOT NULL,        -- ID del menú (ej. ADMINISTRADOR)
+  NOMBRE VARCHAR(50) NOT NULL  ,    -- Descripción del menu
+  PRIMARY KEY (CMID)
 );
 
-SELECT * FROM ROLES;
+SELECT * FROM USUARIO_CATALOGO_MENUS;
 
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('ADMIN','ADMINISTRADOR DEL SSITEMA','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('CONTROL','CONTROL DEL PROCESO ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('OPERATIVO','OPERADOR DEL SISTEMA EN OOAD ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('SECCION','JEFE DE SECCIÓN EN OOAD ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('OFICINA','JEFE DE OFICINA EN OOAD ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('DEPARTAMENTO','JEFE DE DEPARTAMENTO EN OOAD ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('SERVICIO','JEFE DE SERVICIO EN OOAD ','OOAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('OPERATIVO_UNIDAD','OPERADOR DEL SISTEMA EN UNIDAD','UNIDAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('OFICINA_UNIDAD','JEFE DE OFICINA EN UNIDAD','UNIDAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('DEPARTAMENTO_UNIDAD','JEFE DE DEPARTAMENTO EN UNIDAD','UNIDAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('ADMINISTRADOR_UNIDAD','ADMINISTRADOR EN UNIDAD','UNIDAD');
-INSERT INTO ROLES (RID,NOMBRE,UNIDAD) VALUES ('DIRECTOR','DIRECTOR EN UNIDAD','UNIDAD');
+INSERT INTO USUARIO_CATALOGO_MENUS (CMID, NOMBRE) VALUES
+('ADMINISTRADOR', 'Administrador del Sistema'),
+('CONTROL_PROCESO', 'Oficina de Control del proceso'),
+('DEPTO_PERSONAL', 'Departamento de Personal');
 
-SELECT * FROM ROLES;
+SELECT * FROM USUARIO_CATALOGO_MENUS;
 
 
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE USUARIO_CATALOGO_PERFILES (
+    CPID VARCHAR(50) PRIMARY KEY,
+    TITLE VARCHAR(100) NOT NULL,
+    ICON VARCHAR(100),
+    PATH VARCHAR(100)
+);
+
+SELECT * FROM USUARIO_CATALOGO_PERFILES;
+
+INSERT INTO USUARIO_CATALOGO_PERFILES (CPID, TITLE, ICON, PATH) VALUES
+('inicio',             'Inicio',                    'bi-house-fill',              '/inicio'),
+('critica_calculo',    'Crítica de cálculo',        'bi-card-checklist',          NULL),
+('ejecutar_calculos',  'Ejecutar Cálculos',         'bi-menu-button-wide',        '/calculos-ejecucion'),
+('activar_critica',    'Activar Crítica',           'bi-bookmark-check-fill',     '/calculos-activar'),
+('calculo_individual', 'Cálculos Individuales',     'bi-calculator-fill',         '/calculo-individual'),
+('solicitudes-calculos','Solicitudes calculos',     'bi-browser-safari',          '/calculos-pendientes'),
+('imprimir-calculos',  'Imprimir Solicitudes',      'bi-filetype-pdf',            '/imprimir-calculos'),
+('archivos',           'Archivos',                  'bi-files',                   NULL),
+('archivo_calculos',   'Cargar Archivo Cálculos',   'bi-file-earmark-text-fill',  '/archivo-calculos'),
+('archivo_maestro',    'Cargar Archivo Maestro',    'bi-file-earmark-person',     '/archivo-maestro'),
+('usuarios',           'Usuarios',                  'bi-person-circle',           NULL),
+('crud_usuarios',      'CRUD Usuarios',             'bi-person-fill-gear',        '/usuarios-CRUD'),
+('consulta_usuarios',  'Consulta',                  'bi-person-vcard-fill',       '/usuarios-consulta'),
+('contacto',           'Contacto',                  'bi-info-circle-fill',        '/contacto');
+
+SELECT * FROM USUARIO_CATALOGO_PERFILES;
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE USUARIO_MENUS (
+  MID VARCHAR(50) NOT NULL,         -- ID del menú (ej. ADMINISTRADOR)
+  PID VARCHAR(50) NOT NULL,         -- ID del perfil (ej. inicio, contacto)
+  ORDEN INT NOT NULL,               -- Orden en que aparecerá el menú
+  PARENT_PID VARCHAR(50),           -- Nodo padre si es submenu, puede ser NULL
+  PRIMARY KEY (MID, PID),
+  FOREIGN KEY (MID) REFERENCES USUARIO_CATALOGO_MENUS(CMID),
+  FOREIGN KEY (PID) REFERENCES USUARIO_CATALOGO_PERFILES(CPID),
+  FOREIGN KEY (PARENT_PID) REFERENCES USUARIO_CATALOGO_PERFILES(CPID)
+);
+
+SELECT * FROM USUARIO_MENUS;
+
+-- MENÚ ADMINISTRADOR
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'inicio', 1, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'critica_calculo', 2, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'ejecutar_calculos', 3, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'activar_critica', 4, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'archivos', 5, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'archivo_calculos', 6, 'archivos');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'archivo_maestro', 7, 'archivos');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'usuarios', 8, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'crud_usuarios', 9, 'usuarios');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'consulta_usuarios', 10, 'usuarios');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('ADMINISTRADOR', 'contacto', 11, NULL);
+            
+-- MENÚ CONTROL_PROCESO
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'inicio', 1, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'critica_calculo', 2, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'ejecutar_calculos', 3, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'activar_critica', 4, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'archivos', 5, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'archivo_calculos', 6, 'archivos');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'archivo_maestro', 7, 'archivos');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'usuarios', 8, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'crud_usuarios', 9, 'usuarios');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'consulta_usuarios', 10, 'usuarios');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('CONTROL_PROCESO', 'contacto', 11, NULL);
+
+-- MENÚ DEPTO_PERSONAL
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'inicio', 1, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'critica_calculo', 2, NULL);
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'calculo_individual', 3, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'solicitudes-calculos', 4, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'imprimir-calculos', 5, 'critica_calculo');
+INSERT INTO USUARIO_MENUS (MID, PID, ORDEN, PARENT_PID) VALUES ('DEPTO_PERSONAL', 'contacto', 6, NULL);
+           
+SELECT * FROM USUARIO_MENUS;
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE USUARIO_ROLES (
+    RID VARCHAR(20) PRIMARY KEY,
+    NOMBRE VARCHAR(50) NOT NULL UNIQUE,
+    UNIDAD VARCHAR(20) NOT NULL CHECK (UNIDAD IN ('OOAD', 'UNIDAD')),
+    MENU_ID VARCHAR(20) NULL,
+    FOREIGN KEY (MENU_ID) REFERENCES USUARIO_CATALOGO_MENUS(CMID)
+);
+
+SELECT * FROM USUARIO_ROLES;
+
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('ADMIN','ADMINISTRADOR DEL SSITEMA','OOAD','ADMINISTRADOR');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('CONTROL','CONTROL DEL PROCESO ','OOAD','CONTROL_PROCESO');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('OPERATIVO','OPERADOR DEL SISTEMA EN OOAD ','OOAD','DEPTO_PERSONAL');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('SECCION','JEFE DE SECCIÓN EN OOAD ','OOAD','DEPTO_PERSONAL');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('OFICINA','JEFE DE OFICINA EN OOAD ','OOAD','DEPTO_PERSONAL');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('DEPARTAMENTO','JEFE DE DEPARTAMENTO EN OOAD ','OOAD','DEPTO_PERSONAL');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('SERVICIO','JEFE DE SERVICIO EN OOAD ','OOAD','DEPTO_PERSONAL');
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('OPERATIVO_UNIDAD','OPERADOR DEL SISTEMA EN UNIDAD','UNIDAD',NULL);
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('OFICINA_UNIDAD','JEFE DE OFICINA EN UNIDAD','UNIDAD',NULL);
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('DEPARTAMENTO_UNIDAD','JEFE DE DEPARTAMENTO EN UNIDAD','UNIDAD',NULL);
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('ADMINISTRADOR_UNIDAD','ADMINISTRADOR EN UNIDAD','UNIDAD',NULL);
+INSERT INTO USUARIO_ROLES (RID,NOMBRE,UNIDAD,MENU_ID) VALUES ('DIRECTOR','DIRECTOR EN UNIDAD','UNIDAD',NULL);
+
+SELECT * FROM USUARIO_ROLES;
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE USUARIOS (
 	MATRICULA VARCHAR(20) PRIMARY KEY,
 	PASSWORD VARCHAR(60) NOT NULL,
@@ -41,7 +166,10 @@ CREATE TABLE USUARIOS (
     OFICINA VARCHAR(40) NULL,
     SECCION VARCHAR(40) NULL,
     ROLE_ID VARCHAR(20) NOT NULL DEFAULT 'OPERATIVO',
-    FOREIGN KEY (ROLE_ID) REFERENCES ROLES(RID)
+    CREADO_EN TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ULTIMO_CAMBIO_PASSWORD TIMESTAMP NULL,
+    ULTIMA_MODIFICACION TIMESTAMP NULL,
+    FOREIGN KEY (ROLE_ID) REFERENCES USUARIO_ROLES(RID)
 );
 
 SELECT * FROM USUARIOS;
@@ -67,41 +195,17 @@ INSERT INTO USUARIOS (MATRICULA,PASSWORD,NICKNAME,NOMBRE,APELLIDO1,APELLIDO2,EMA
 
 SELECT * FROM USUARIOS;
 
-CREATE TABLE PERFILES (
-    PID VARCHAR(50) PRIMARY KEY,
-    TITLE VARCHAR(100) NOT NULL,
-    ICON VARCHAR(100),
-    PATH VARCHAR(100),
-    PARENT_ID VARCHAR(50),
-    FOREIGN KEY (PARENT_ID) REFERENCES PERFILES(PID)
-);
-
-SELECT * FROM PERFILES;
-
-INSERT INTO PERFILES (PID, TITLE, ICON, PATH, PARENT_ID) VALUES
-('inicio',             'Inicio',                    'bi-house-fill',              '/inicio',              NULL),
-('critica_calculo',    'Crítica de cálculo',        'bi-card-checklist',          NULL,                   NULL),
-('ejecutar_calculos',  'Ejecutar Cálculos',         'bi-menu-button-wide',        '/calculos-ejecucion',  'critica_calculo'),
-('activar_critica',    'Activar Crítica',           'bi-bookmark-check-fill',     '/calculos-activar',    'critica_calculo'),
-('calculo_individual', 'Cálculos Individuales',     'bi-calculator-fill',         '/calculo-individual',  'critica_calculo'),
-('solicitudes-calculos','Solicitudes calculos',     'bi-browser-safari',          '/calculos-pendientes', 'critica_calculo'),
-('imprimir-calculos',  'Imprimir Solicitudes',      'bi-filetype-pdf',            '/imprimir-calculos',    'critica_calculo'),
-('archivos',           'Archivos',                  'bi-files',                   NULL,                   NULL),
-('archivo_calculos',   'Cargar Archivo Cálculos',   'bi-file-earmark-text-fill',  '/archivo-calculos',    'archivos'),
-('archivo_maestro',    'Cargar Archivo Maestro',    'bi-file-earmark-person',     '/archivo-maestro',     'archivos'),
-('usuarios',           'Usuarios',                  'bi-person-circle',           NULL,                   NULL),
-('crud_usuarios',      'CRUD Usuarios',             'bi-person-fill-gear',        '/usuarios-CRUD',       'usuarios'),
-('consulta_usuarios',  'Consulta',                  'bi-person-vcard-fill',       '/usuarios-consulta',   'usuarios'),
-('contacto',           'Contacto',                  'bi-info-circle-fill',        '/contacto',            NULL);
-
-SELECT * FROM PERFILES;
 
 
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE USUARIO_PERFILES (
     PID VARCHAR(20) NOT NULL,
     MATRICULA VARCHAR(20) NOT NULL,
     PRIMARY KEY (PID, MATRICULA),
-    FOREIGN KEY (PID) REFERENCES PERFILES(PID),
+    FOREIGN KEY (PID) REFERENCES USUARIO_CATALOGO_PERFILES(CPID),
     FOREIGN KEY (MATRICULA) REFERENCES USUARIOS(MATRICULA)
 );
 
@@ -211,11 +315,12 @@ INSERT INTO USUARIO_PERFILES (MATRICULA, PID) VALUES
 SELECT * FROM USUARIO_PERFILES;
 
 
-            
-           
-            
-            
-           
+
+
+
+
+
+
 
 
 

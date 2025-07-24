@@ -5,24 +5,23 @@ export const verifyToken = (req, res, next) => {
     let token = req.headers.authorization;
 
     if(!token){
-        return res.status(401).json({error: 'Token not Provided'});
+        return res.status(401).json({error: 'Token no proveío'});
     }
 
     // Se pone el split porque el token viene con un formato: "Bearer @@@@@6♦@@@@321d6ds@sa$%%"
     token = token.split(' ')[1];
 
     try{
-        const { email, role_id } = jwt.verify(token, process.env.JWT_SECRET);
+        const { matricula, role_id } = jwt.verify(token, process.env.JWT_SECRET);
 
         // Al crear estas propiedades en el 'req' se pasan a la siguiente función o middleware
-        req.email = email;
+        req.matricula = matricula;
         req.role_id = role_id;
 
-
-        next()
+        next(); 
     } catch(error){
-        console.log(error);
-        return res.status(400).json({error: 'Invalid Token'});
+        console.log('Error Token Invalido: ',error);
+        return res.status(400).json({error: 'Token invalido'});
     }
 }
 
