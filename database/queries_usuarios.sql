@@ -1,8 +1,9 @@
-DROP TABLE IF EXISTS RESERVATIONS;
-DROP TABLE IF EXISTS PETS;
-DROP TABLE IF EXISTS USERS;
-DROP TABLE IF EXISTS ROLES;
-
+DROP TABLE IF EXISTS USUARIO_CATALOGO_MENUS;
+DROP TABLE IF EXISTS USUARIO_CATALOGO_PERFILES;
+DROP TABLE IF EXISTS USUARIO_MENUS;
+DROP TABLE IF EXISTS USUARIO_ROLES;
+DROP TABLE IF EXISTS USUARIOS;
+DROP TABLE IF EXISTS USUARIO_PERFILES;
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -199,7 +200,6 @@ SELECT * FROM USUARIOS;
 
 
 
-
 ----------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE USUARIO_PERFILES (
     PID VARCHAR(20) NOT NULL,
@@ -313,52 +313,3 @@ INSERT INTO USUARIO_PERFILES (MATRICULA, PID) VALUES
 ('99271401', 'contacto');
 
 SELECT * FROM USUARIO_PERFILES;
-
-
-
-
-
-
-
-
-
-
-
-SELECT * FROM USERS;
-
--- CREAR VÍA API:
--- admin@admin.com, vet_1@vet.com, client_1@client.com
-
--- ACTUALIZAR ROLE ADMIN
-UPDATE USERS
-SET ROLE_ID = 1
-WHERE EMAIL = 'admin@admin.com';
-
--- VIDEO 3 PAGINACIÓN
-SELECT * FROM USERS;
-SELECT * FROM PETS;
-
--- verificar que tengas un usuario client y según su uid crear pets
--- CREAR PETS 21 PETS CON OWNER 3 (siempre y cuando exista el owner 3)
-INSERT INTO pets (NAME, SPECIES, BREED, OWNER) VALUES
-('Firulais', 'Perro', 'Labrador', 3),
-('Mishi', 'Gato', 'Siames', 3),
-('Milo', 'Perro', 'Chihuahua', 3),
-('Molly', 'Perro', 'Pug', 3),
-('Max', 'Perro', 'Pastor Aleman', 3),
-('Luna', 'Perro', 'Labrador', 3),
-('Bella', 'Perro', 'Labrador', 3),
-('Daisy', 'Perro', 'Labrador', 3),
-('Lucy', 'Perro', 'Labrador', 3),
-('Cooper', 'Perro', 'Labrador', 3),
-('Charlie', 'Perro', 'Labrador', 3),
-('Rocky', 'Perro', 'Labrador', 3),
-('Buddy', 'Perro', 'Labrador', 3),
-('Lola', 'Perro', 'Labrador', 3),
-('Sadie', 'Perro', 'Labrador', 3),
-('Duke', 'Perro', 'Labrador', 3),
-('Zoe', 'Perro', 'Labrador', 3),
-('Stella', 'Perro', 'Labrador', 3),
-('Penny', 'Perro', 'Labrador', 3),
-('Ruby', 'Perro', 'Labrador', 3),
-('Rosie', 'Perro', 'Labrador', 3);
