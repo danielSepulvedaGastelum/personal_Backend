@@ -5,7 +5,7 @@ export const verifyToken = (req, res, next) => {
     let token = req.headers.authorization;
 
     if(!token){
-        return res.status(401).json({error: 'Token no proveío'});
+        return res.status(401).json({ok: false, msg: 'Token no proveío'});
     }
 
     // Se pone el split porque el token viene con un formato: "Bearer @@@@@6♦@@@@321d6ds@sa$%%"
@@ -21,7 +21,7 @@ export const verifyToken = (req, res, next) => {
         next(); 
     } catch(error){
         console.log('Error Token Invalido: ',error);
-        return res.status(400).json({error: 'Token invalido'});
+        return res.status(401).json({ok: false, msg: 'Token invalido'});
     }
 }
 
@@ -31,7 +31,7 @@ export const verifyAdmin = (req, res, next) =>{
         return next();
     }
 
-    res.status(403).json({error: 'Unauthorized only Admin user'});
+    res.status(403).json({ok: false, msg: 'Unauthorized only Admin user'});
 }
 
 export const verifyVet = (req, res, next) => {
@@ -39,5 +39,5 @@ export const verifyVet = (req, res, next) => {
         return next();
     }
 
-    res.status(403).json({error: 'Unauthorized only Vet user'});
+    res.status(403).json({ok: false, msg: 'Unauthorized only Vet user'});
 }

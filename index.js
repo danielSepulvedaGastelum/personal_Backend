@@ -5,6 +5,7 @@ import cors from "cors";
 import userRouter from './routes/user.route.js';
 import petRouter from './routes/pet.route.js';
 import usuariosRouter from './routes/usuarios.route.js';
+import calculosRouter from './routes/calculos.route.js';
 
 
 
@@ -21,6 +22,7 @@ app.use(cors({
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/pets', petRouter);
 app.use('/api/v1/usuarios', usuariosRouter);
+app.use('/api/vi/calculos',calculosRouter);
 
 const PORT = process.env.PORT || 3000;
 
