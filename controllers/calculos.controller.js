@@ -24,6 +24,31 @@ const buscaMaricula = async ( req, res ) => {
     }
 }
 
+const buscaNombre = async ( req, res ) => {
+    try{
+
+        const { nombre } = req.query;
+
+        if(!nombre ){
+            return res.status(400).json({ok: false, msg: 'Necesitan digitar el nombre del trabajador'});
+        }
+
+        const trabajadores = await calculosModel.searchByNombre(nombre);
+        if(!trabajadores){
+            return res.status(404).json({ok: false, msg: 'Nombre no existe'});
+        }
+        
+        return res.status(201).json({ok: true, msg: "ok",  trabajadores});
+    } catch (error){
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error Server'
+        });
+    }
+}
+
 export const calculosController = {
-    buscaMaricula
+    buscaMaricula,
+    buscaNombre
 }

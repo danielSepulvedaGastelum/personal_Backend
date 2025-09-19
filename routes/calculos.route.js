@@ -7,6 +7,7 @@ const router = Router();
 //api/v1/calculos
 
 router.get('/matricula', verifyToken, calculosController.buscaMaricula);
+router.get('/nombre', verifyToken, calculosController.buscaNombre);
 
 
 
