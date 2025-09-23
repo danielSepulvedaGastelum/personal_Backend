@@ -46,6 +46,7 @@ const searchByNombre = async(nombre) => {
             SELECT matricula, nombre, tc
             FROM CALCULOS_CATALOGO_EMPLEADOS
             WHERE to_tsvector('spanish', nombre) @@ to_tsquery('spanish', $1)
+            ORDER BY nombre
             LIMIT 50
         `,
         values: [terms]
