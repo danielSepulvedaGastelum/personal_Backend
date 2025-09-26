@@ -27,7 +27,7 @@ const searchByNombre = async(nombre) => {
                 WHERE nombre ILIKE $1
                 LIMIT 50
             `,
-            values: [`%${clean}%`]
+            values: [`%${clean}`]
         };
         const { rows } = await db.query(query);
         return rows;
