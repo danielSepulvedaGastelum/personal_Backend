@@ -22,7 +22,7 @@ const searchByNombre = async(nombre) => {
     if (clean.length < 3 && !clean.includes(" ")) {
         const query = {
             text: `
-                SELECT matricula, nombre, tc
+                SELECT matricula, nombre, tc , status
                 FROM CALCULOS_CATALOGO_EMPLEADOS
                 WHERE nombre ILIKE $1
                 LIMIT 50
@@ -43,7 +43,7 @@ const searchByNombre = async(nombre) => {
 
     const query = {
         text: `
-            SELECT matricula, nombre, tc
+            SELECT matricula, nombre, tc , status
             FROM CALCULOS_CATALOGO_EMPLEADOS
             WHERE to_tsvector('spanish', nombre) @@ to_tsquery('spanish', $1)
             ORDER BY nombre
